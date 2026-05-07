@@ -1,7 +1,8 @@
 import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
-import { PropertiesParser } from '../../../services/PropertiesParser';
+import { PropertiesParser } from '../../services/PropertiesParser';
+import type { PropertyEntry } from '../../types/properties';
 
 function readFixture(name: string): string {
   const fp = path.resolve(process.cwd(), 'test', 'fixtures', name);
@@ -15,7 +16,7 @@ describe('PropertiesParser - Phase 2.1', () => {
     const entries = parser.parse(content);
 
     // Simple keys
-    const byKey = new Map(entries.filter(e => e.key !== '').map(e => [e.key, e]));
+    const byKey = new Map(entries.filter((e: PropertyEntry) => e.key !== '').map((e: PropertyEntry) => [e.key, e]));
 
     assert.strictEqual(byKey.get('greeting')?.value, 'Hello');
     assert.strictEqual(byKey.get('Farewell')?.value, 'Goodbye');
@@ -29,10 +30,10 @@ describe('PropertiesParser - Phase 2.1', () => {
     assert.strictEqual(byKey.get('key_with_space')?.value, 'Value with spaces');
     assert.strictEqual(byKey.get('path')?.value, 'C:\\temp');
     // Blank line preserved as an entry with empty key
-    const hasBlank = entries.find(e => e.key === '');
+    const hasBlank = entries.find((e: PropertyEntry) => e.key === '');
     assert.ok(hasBlank, 'Should preserve a blank-line entry');
     // Comments preserved
-    const commentEntries = entries.filter(e => e.commented);
+    const commentEntries = entries.filter((e: PropertyEntry) => e.commented);
     assert.strictEqual(commentEntries.length, 2, 'Two comment lines should be captured');
   });
 
@@ -40,7 +41,7 @@ describe('PropertiesParser - Phase 2.1', () => {
     const parser = new PropertiesParser();
     const content = readFixture('unicode.properties');
     const entries = parser.parse(content);
-    const byKey = new Map(entries.filter(e => e.key !== '').map(e => [e.key, e]));
+    const byKey = new Map(entries.filter((e: PropertyEntry) => e.key !== '').map((e: PropertyEntry) => [e.key, e]));
     // unicodeKey should decode to éValue
     assert.strictEqual(byKey.get('unicodeKey')?.value, 'éValue');
   });
@@ -49,7 +50,7 @@ describe('PropertiesParser - Phase 2.1', () => {
     const parser = new PropertiesParser();
     const content = readFixture('continuations.properties');
     const entries = parser.parse(content);
-    const byKey = new Map(entries.filter(e => e.key !== '').map(e => [e.key, e]));
+    const byKey = new Map(entries.filter((e: PropertyEntry) => e.key !== '').map((e: PropertyEntry) => [e.key, e]));
     assert.strictEqual(byKey.get('longLine')?.value, 'This is a long value that continues on the next line and should be joined');
   });
 
@@ -57,10 +58,10 @@ describe('PropertiesParser - Phase 2.1', () => {
     const parser = new PropertiesParser();
     const content = readFixture('comments.properties');
     const entries = parser.parse(content);
-    const commentEntries = entries.filter(e => e.commented);
+    const commentEntries = entries.filter((e: PropertyEntry) => e.commented);
     assert.strictEqual(commentEntries.length, 2);
     // The real option key/value should still be parsed
-    const actual = entries.find(e => e.key === 'actualKey');
+    const actual = entries.find((e: PropertyEntry) => e.key === 'actualKey');
     assert.ok(actual, 'Should contain actualKey from fixture');
     assert.strictEqual(actual!.value, 'actualValue');
   });
