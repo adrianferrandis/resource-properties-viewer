@@ -151,10 +151,20 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
       this.isApplyingEdit = true;
       await vscode.workspace.applyEdit(edit);
       this.isApplyingEdit = false;
-      const refreshed = await this.loadBundleModel(await this.bundleDiscovery.discoverRelatedFiles(document.uri.toString()));
-      this.currentBundleModel = refreshed;
+
+      if (this.currentBundleModel) {
+        if (!this.currentBundleModel.entries[key]) {
+          this.currentBundleModel.entries[key] = {};
+        }
+        for (const locale of this.currentBundleModel.locales) {
+          if (this.currentBundleModel.entries[key][locale] === undefined) {
+            this.currentBundleModel.entries[key][locale] = '';
+          }
+        }
+        webviewPanel.webview.postMessage({ type: 'update', model: this.currentBundleModel });
+      }
+
       this.bundleFilesByLocale = new Map(await this.listBundleFiles(document));
-      webviewPanel.webview.postMessage({ type: 'update', model: refreshed });
     } catch (err) {
       this.isApplyingEdit = false;
       webviewPanel.webview.postMessage({ type: 'error', message: 'Failed to add key: ' + (err instanceof Error ? err.message : String(err)) });
