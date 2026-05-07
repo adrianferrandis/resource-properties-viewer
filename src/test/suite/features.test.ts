@@ -174,7 +174,7 @@ describe('Edge Cases and Error Handling', () => {
   it('should handle duplicate keys (last wins)', () => {
     const content = 'key=first\nkey=second\nkey=third';
     const result = parser.parse(content);
-    assert.strictEqual(result.length, 3);
-    assert.strictEqual(result[2].value, 'third');
+    assert.strictEqual(result.length, 1);
+    assert.strictEqual(result[0].value, 'third');
   });
 });
