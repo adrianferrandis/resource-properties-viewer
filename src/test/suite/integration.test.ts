@@ -9,10 +9,10 @@ function getSampleFilePath(locale: string): string {
   return path.join(SAMPLE_DIR, `messages${locale ? '_' + locale : ''}.properties`);
 }
 
-suite('Resource Properties Viewer Integration', () => {
+describe('Resource Properties Viewer Integration', () => {
   let documentsToClose: vscode.TextDocument[] = [];
 
-  teardown(async () => {
+  afterEach(async () => {
     for (const doc of documentsToClose) {
       try {
         await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
@@ -21,7 +21,7 @@ suite('Resource Properties Viewer Integration', () => {
     documentsToClose = [];
   });
 
-  test('Opens .properties file with custom editor', async () => {
+  it('Opens .properties file with custom editor', async () => {
     const filePath = getSampleFilePath('');
     const uri = vscode.Uri.file(filePath);
 
@@ -36,7 +36,7 @@ suite('Resource Properties Viewer Integration', () => {
     assert.ok(content.includes('farewell'), 'Should contain farewell key');
   });
 
-  test('Loads related locale files', async () => {
+  it('Loads related locale files', async () => {
     const locales = ['', 'en', 'es', 'fr'];
 
     for (const locale of locales) {
@@ -64,7 +64,7 @@ suite('Resource Properties Viewer Integration', () => {
     assert.ok(overlap.length >= 5, `Expected significant key overlap between base and locale files, got ${overlap.length}`);
   });
 
-  test('Edit persists to correct file', async () => {
+  it('Edit persists to correct file', async () => {
     const tempDir = path.resolve(process.cwd(), 'test', 'fixtures');
     const tempFile = path.join(tempDir, 'edit_test.properties');
     const originalContent = '# Test file\ntest.key=original value\n';
@@ -100,7 +100,7 @@ suite('Resource Properties Viewer Integration', () => {
     }
   });
 
-  test('Locale file path derivation works correctly', async () => {
+  it('Locale file path derivation works correctly', async () => {
     const basePath = '/path/to/messages.properties';
     const expectedPatterns = [
       { locale: 'en', expected: '/path/to/messages_en.properties' },
@@ -116,7 +116,7 @@ suite('Resource Properties Viewer Integration', () => {
     }
   });
 
-  test('Handles missing locale files gracefully', async () => {
+  it('Handles missing locale files gracefully', async () => {
     const soloFile = path.resolve(process.cwd(), 'test', 'fixtures', 'simple.properties');
     const uri = vscode.Uri.file(soloFile);
 
