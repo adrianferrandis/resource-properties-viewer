@@ -1,0 +1,38 @@
+# Source files (only need compiled dist)
+src/**
+tsconfig.json
+
+# Tests
+out/test/**
+**/*.test.ts
+**/*.spec.ts
+
+# Development files
+.vscode/**
+.eslintrc.json
+.gitignore
+.vscodeignore
+
+# Documentation (keep README, CHANGELOG, LICENSE)
+# images/README.md - exclude icon documentation
+
+# Build tools
+esbuild.mjs
+node_modules/**
+
+# Demo files (not needed in extension)
+demo-app/**
+
+# Temporary files
+*.log
+.DS_Store
+Thumbs.db
+
+# Git
+.git/**
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~

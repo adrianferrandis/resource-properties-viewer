@@ -1,0 +1,137 @@
+{
+  "name": "resource-properties-editor",
+  "displayName": "Resource Bundle Editor",
+  "description": "Visual editor for Java .properties files with multi-locale support",
+  "version": "0.0.1",
+  "publisher": "adrianferrandis",
+  "author": {
+    "name": "Adrian Ferrandis Homsi"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "properties",
+    "i18n",
+    "localization",
+    "resource bundle",
+    "java",
+    "editor"
+  ],
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "homepage": "https://github.com/adrianferrandis/resource-properties-viewer#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adrianferrandis/resource-properties-viewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adrianferrandis/resource-properties-viewer/issues"
+  },
+  "activationEvents": [
+    "onCustomEditor:resourceBundleEditor.propertiesEditor"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "resourceBundleEditor.open",
+        "title": "Open with Resource Bundle Editor",
+        "category": "Resource Bundle",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "resourceBundleEditor.reload",
+        "title": "Reload Resource Bundle",
+        "category": "Resource Bundle",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "resourceBundleEditor.open",
+          "when": "resourceExtname == .properties"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "resourceBundleEditor.open",
+          "when": "resourceExtname == .properties",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "resourceBundleEditor.open",
+          "when": "resourceExtname == .properties",
+          "group": "navigation"
+        }
+      ]
+    },
+    "customEditors": [
+      {
+        "viewType": "resourceBundleEditor.propertiesEditor",
+        "displayName": "Resource Bundle Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.properties"
+          }
+        ]
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Resource Bundle Editor",
+      "properties": {
+        "resourceBundleEditor.showRelatedFiles": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show related locale files in the editor"
+        },
+        "resourceBundleEditor.defaultLocale": {
+          "type": "string",
+          "default": "en",
+          "description": "Default locale to display when multiple locales are present"
+        },
+        "resourceBundleEditor.unicodeEscapeDefault": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to show Unicode escapes by default (\\uXXXX)"
+        },
+        "resourceBundleEditor.keySeparator": {
+          "type": "string",
+          "default": ".",
+          "description": "Separator used to split hierarchical keys (e.g. 'ui.dialog.ok')"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "test": "node ./out/test/runTest.js",
+    "vscode:prepublish": "npm run build",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.19.0",
+    "@types/vscode": "^1.74.0",
+    "@vscode/test-electron": "^2.3.0",
+    "@vscode/vsce": "^2.24.0",
+    "esbuild": "^0.19.0",
+    "glob": "^10.3.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.0"
+  }
+}
