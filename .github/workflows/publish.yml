@@ -1,0 +1,70 @@
+name: Publish Extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      versionType:
+        description: 'Version bump type'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        required: true
+        default: 'patch'
+      dryRun:
+        description: 'Dry run (package only, do not publish)'
+        type: boolean
+        required: true
+        default: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version
+        if: ${{ !inputs.dryRun }}
+        run: npm version ${{ inputs.versionType }} -m "Bump version to %s"
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Publish to Visual Studio Marketplace
+        uses: HaaLeo/publish-vscode-extension@v2
+        with:
+          pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
+          registryUrl: https://marketplace.visualstudio.com
+          dryRun: ${{ inputs.dryRun }}
+
+      - name: Push version bump
+        if: ${{ !inputs.dryRun }}
+        run: git push && git push --tags
+
+      - name: Upload VSIX artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-vsix
+          path: '*.vsix'
+          retention-days: 30
