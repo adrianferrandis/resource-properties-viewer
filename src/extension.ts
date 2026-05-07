@@ -89,14 +89,8 @@ export function activate(context: vscode.ExtensionContext) {
   if (!hasShownWelcome) {
     vscode.window.showInformationMessage(
       'Resource Properties Viewer is now active! Open any .properties file to start viewing.',
-      'Open Demo',
-      'Dismiss'
-    ).then(selection => {
-      if (selection === 'Open Demo') {
-        // Open the demo folder
-        const demoPath = vscode.Uri.file(context.extensionPath + '/demo-app');
-        vscode.commands.executeCommand('vscode.openFolder', demoPath);
-      }
+      'Got it'
+    ).then(() => {
       context.globalState.update('resourcePropertiesViewer.welcomeShown', true);
     });
   }
