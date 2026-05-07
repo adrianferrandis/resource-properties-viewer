@@ -1,6 +1,6 @@
-# Demo Application - Resource Bundle Editor
+# Demo Application - Resource Properties Viewer
 
-Esta carpeta contiene una aplicación de ejemplo para probar la extensión Resource Bundle Editor.
+Esta carpeta contiene una aplicación de ejemplo para probar la extensión Resource Properties Viewer.
 
 ## Archivos
 

@@ -1,4 +1,4 @@
-# Contributing to Resource Bundle Editor
+# Contributing to Resource Properties Viewer
 
 Thank you for your interest in contributing!
 

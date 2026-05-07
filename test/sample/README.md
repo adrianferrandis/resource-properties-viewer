@@ -1,6 +1,6 @@
 # Sample Test Files
 
-These .properties files are for testing the Resource Bundle Editor extension.
+These .properties files are for testing the Resource Properties Viewer extension.
 
 ## Files
 

@@ -5,18 +5,18 @@ export function activate(context: vscode.ExtensionContext) {
   // Register the custom editor provider
   context.subscriptions.push(PropertiesEditorProvider.register(context));
 
-  // Register command: Open with Resource Bundle Editor
+  // Register command: Open with Resource Properties Viewer
   context.subscriptions.push(
-    vscode.commands.registerCommand('resourceBundleEditor.open', async (uri?: vscode.Uri) => {
+    vscode.commands.registerCommand('resourcePropertiesViewer.open', async (uri?: vscode.Uri) => {
       const targetUri = uri || vscode.window.activeTextEditor?.document.uri;
-      
+
       if (!targetUri) {
         vscode.window.showErrorMessage('No file selected');
         return;
       }
 
       if (!targetUri.fsPath.endsWith('.properties')) {
-        vscode.window.showErrorMessage('Resource Bundle Editor only works with .properties files');
+        vscode.window.showErrorMessage('Resource Properties Viewer only works with .properties files');
         return;
       }
 
@@ -27,25 +27,25 @@ export function activate(context: vscode.ExtensionContext) {
           PropertiesEditorProvider.viewType
         );
       } catch (error) {
-        vscode.window.showErrorMessage(`Failed to open Resource Bundle Editor: ${error}`);
+        vscode.window.showErrorMessage(`Failed to open Resource Properties Viewer: ${error}`);
       }
     })
   );
 
-  // Register command: Reload Resource Bundle
+  // Register command: Reload Resource Properties
   context.subscriptions.push(
-    vscode.commands.registerCommand('resourceBundleEditor.reload', async () => {
+    vscode.commands.registerCommand('resourcePropertiesViewer.reload', async () => {
       const activeEditor = vscode.window.activeTextEditor;
-      
+
       if (!activeEditor) {
-        vscode.window.showInformationMessage('No active editor to reload');
+        vscode.window.showInformationMessage('No active viewer to reload');
         return;
       }
 
       const document = activeEditor.document;
-      
+
       if (!document.uri.fsPath.endsWith('.properties')) {
-        vscode.window.showInformationMessage('Resource Bundle Reload only works with .properties files');
+        vscode.window.showInformationMessage('Resource Properties Reload only works with .properties files');
         return;
       }
 
@@ -57,38 +57,38 @@ export function activate(context: vscode.ExtensionContext) {
           PropertiesEditorProvider.viewType,
           { preview: false }
         );
-        vscode.window.showInformationMessage('Resource Bundle reloaded successfully');
+        vscode.window.showInformationMessage('Resource Properties reloaded successfully');
       } catch (error) {
         vscode.window.showErrorMessage(`Failed to reload: ${error}`);
       }
     })
   );
 
-  // Register command: Show Resource Bundle Info
+  // Register command: Show Resource Properties Info
   context.subscriptions.push(
-    vscode.commands.registerCommand('resourceBundleEditor.showInfo', async () => {
+    vscode.commands.registerCommand('resourcePropertiesViewer.showInfo', async () => {
       const activeEditor = vscode.window.activeTextEditor;
-      
+
       if (!activeEditor || !activeEditor.document.uri.fsPath.endsWith('.properties')) {
-        vscode.window.showInformationMessage('Open a .properties file to see Resource Bundle information');
+        vscode.window.showInformationMessage('Open a .properties file to see Resource Properties information');
         return;
       }
 
       const fileName = activeEditor.document.fileName;
       const baseName = fileName.replace(/(_[a-zA-Z_]+)?\.properties$/, '');
-      
+
       vscode.window.showInformationMessage(
-        `Resource Bundle: ${baseName}`,
+        `Resource Properties: ${baseName}`,
         'OK'
       );
     })
   );
 
   // Show welcome message on first activation
-  const hasShownWelcome = context.globalState.get<boolean>('resourceBundleEditor.welcomeShown');
+  const hasShownWelcome = context.globalState.get<boolean>('resourcePropertiesViewer.welcomeShown');
   if (!hasShownWelcome) {
     vscode.window.showInformationMessage(
-      'Resource Bundle Editor is now active! Open any .properties file to start editing.',
+      'Resource Properties Viewer is now active! Open any .properties file to start viewing.',
       'Open Demo',
       'Dismiss'
     ).then(selection => {
@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
         const demoPath = vscode.Uri.file(context.extensionPath + '/demo-app');
         vscode.commands.executeCommand('vscode.openFolder', demoPath);
       }
-      context.globalState.update('resourceBundleEditor.welcomeShown', true);
+      context.globalState.update('resourcePropertiesViewer.welcomeShown', true);
     });
   }
 }

@@ -69,7 +69,7 @@
     const isSingleFile = fileCount === 1;
     
     const title = document.createElement('h1');
-    title.textContent = isSingleFile ? 'Properties Editor' : 'Resource Bundle Editor';
+    title.textContent = isSingleFile ? 'Properties Editor' : 'Resource Properties Viewer';
     
     const subtitle = document.createElement('div');
     subtitle.className = 'subtitle';

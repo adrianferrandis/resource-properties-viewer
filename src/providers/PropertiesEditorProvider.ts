@@ -13,7 +13,7 @@ type EditMessage = { type: string; key: string; locale: string; value: string };
 const EXTERNAL_SYNC_DEBOUNCE = 100;
 
 export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider {
-  public static readonly viewType = 'resourceBundleEditor.propertiesEditor';
+  public static readonly viewType = 'resourcePropertiesViewer.propertiesViewer';
 
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
     const provider = new PropertiesEditorProvider(context);
@@ -34,7 +34,7 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
   private isApplyingEdit = false;
 
   constructor(private readonly context: vscode.ExtensionContext) {
-    const cfg = vscode.workspace.getConfiguration('resourceBundleEditor');
+    const cfg = vscode.workspace.getConfiguration('resourcePropertiesViewer');
     this.keySeparator = cfg.get<string>('keySeparator', '.');
   }
 
@@ -117,14 +117,14 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
 
           const parsed = this.propertiesParser.parse(content);
           const existingKey = parsed.find(e => e.key === key && !e.commented);
-          
+
           if (!existingKey) {
             const keyParts = key.split('.');
             const prefix = keyParts.length > 1 ? keyParts[0] : null;
-            
+
             let insertLine = parsed.length;
             let lastMatchingPrefixLine = -1;
-            
+
             for (let i = 0; i < parsed.length; i++) {
               const entryKey = parsed[i].key;
               if (entryKey < key) {
@@ -134,14 +134,14 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
                 lastMatchingPrefixLine = i + 1;
               }
             }
-            
+
             if (lastMatchingPrefixLine > 0) {
               insertLine = lastMatchingPrefixLine;
             }
-            
+
             const newLine = `${key}=`;
             originalLines.splice(insertLine, 0, newLine);
-            
+
             const newContent = originalLines.join('\n') + (originalLines[originalLines.length - 1].endsWith('\n') ? '' : '\n');
             edit.replace(uri, new vscode.Range(0, 0, content.split(/\r?\n/).length, 0), newContent);
           }
@@ -281,7 +281,7 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
       const edit = new vscode.WorkspaceEdit();
       const originalLines = content.split(/\r?\n/);
       edit.replace(targetUri, new vscode.Range(0, 0, originalLines.length, 0), updatedContent);
-      
+
       this.isApplyingEdit = true;
       await vscode.workspace.applyEdit(edit);
       this.isApplyingEdit = false;
@@ -318,7 +318,7 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
           if (!entries[entry.key]) entries[entry.key] = {};
           entries[entry.key][bf.locale || 'default'] = entry.value;
         }
-      } catch { 
+      } catch {
         rawContents.push('');
       }
     }
@@ -357,7 +357,7 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src ${webview.cspSource} 'unsafe-inline'; img-src ${webview.cspSource} https:;">
-  <title>Properties Editor</title>
+  <title>Resource Properties Viewer</title>
   <link rel="stylesheet" href="${styleUri}">
 </head>
 <body>

@@ -1,8 +1,8 @@
-# Resource Bundle Editor
+# Resource Properties Viewer
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/adrianferrandis.resource-bundle-editor)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-bundle-editor)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/adrianferrandis.resource-bundle-editor)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-bundle-editor)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/adrianferrandis.resource-bundle-editor)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-bundle-editor)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
 
 A powerful Visual Studio Code extension for editing Java `.properties` files with a modern, spreadsheet-like interface. Inspired by Eclipse's ResourceBundle Editor, but built specifically for VS Code with native integration and real-time synchronization.
 
@@ -26,7 +26,7 @@ A powerful Visual Studio Code extension for editing Java `.properties` files wit
 - **Prefix grouping**: Related keys stay together
 
 ### 🔍 Advanced Filtering
-- **Two filter modes**: 
+- **Two filter modes**:
   - 🔑 **Keys only**: Search only in key names
   - 📝 **Keys + Values**: Search in both keys and values
 - **Instant search**: Results update as you type
@@ -55,7 +55,7 @@ A powerful Visual Studio Code extension for editing Java `.properties` files wit
 #### From VS Code Marketplace
 1. Open VS Code
 2. Press `Cmd/Ctrl+Shift+X` to open Extensions
-3. Search for "Resource Bundle Editor"
+3. Search for "Resource Properties Viewer"
 4. Click **Install**
 
 #### From VSIX
@@ -66,8 +66,8 @@ A powerful Visual Studio Code extension for editing Java `.properties` files wit
 ### Usage
 
 #### Opening Files
-- Right-click any `.properties` file → **"Open with Resource Bundle Editor"**
-- Or use Command Palette: `Cmd/Ctrl+Shift+P` → "Resource Bundle Editor"
+- Right-click any `.properties` file → **"Open with Resource Properties Viewer"**
+- Or use Command Palette: `Cmd/Ctrl+Shift+P` → "Resource Properties Viewer"
 
 #### Editing
 1. Double-click a cell
@@ -94,10 +94,10 @@ A powerful Visual Studio Code extension for editing Java `.properties` files wit
 
 ```json
 {
-  "resourceBundleEditor.showRelatedFiles": true,
-  "resourceBundleEditor.defaultLocale": "en",
-  "resourceBundleEditor.unicodeEscapeDefault": true,
-  "resourceBundleEditor.keySeparator": "."
+  "resourcePropertiesViewer.showRelatedFiles": true,
+  "resourcePropertiesViewer.defaultLocale": "en",
+  "resourcePropertiesViewer.unicodeEscapeDefault": true,
+  "resourcePropertiesViewer.keySeparator": "."
 }
 ```
 
@@ -140,7 +140,7 @@ Tree view automatically groups by `ui` and `api` prefixes.
 ```bash
 # Clone repository
 git clone https://github.com/adrianferrandis/resource-properties-viewer.git
-cd resource-bundle-editor
+cd resource-properties-viewer
 
 # Install dependencies
 npm install

@@ -1,6 +1,6 @@
 {
-  "name": "resource-properties-editor",
-  "displayName": "Resource Bundle Editor",
+  "name": "resource-properties-viewer",
+  "displayName": "Resource Properties Viewer",
   "description": "Visual editor for Java .properties files with multi-locale support",
   "version": "0.0.1",
   "publisher": "adrianferrandis",
@@ -20,7 +20,7 @@
     "localization",
     "resource bundle",
     "java",
-    "editor"
+    "viewer"
   ],
   "icon": "images/icon.png",
   "galleryBanner": {
@@ -36,41 +36,41 @@
     "url": "https://github.com/adrianferrandis/resource-properties-viewer/issues"
   },
   "activationEvents": [
-    "onCustomEditor:resourceBundleEditor.propertiesEditor"
+    "onCustomEditor:resourcePropertiesViewer.propertiesViewer"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "resourceBundleEditor.open",
-        "title": "Open with Resource Bundle Editor",
-        "category": "Resource Bundle",
+        "command": "resourcePropertiesViewer.open",
+        "title": "Open with Resource Properties Viewer",
+        "category": "Resource Properties",
         "icon": "$(open-preview)"
       },
       {
-        "command": "resourceBundleEditor.reload",
-        "title": "Reload Resource Bundle",
-        "category": "Resource Bundle",
+        "command": "resourcePropertiesViewer.reload",
+        "title": "Reload Resource Properties",
+        "category": "Resource Properties",
         "icon": "$(refresh)"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "resourceBundleEditor.open",
+          "command": "resourcePropertiesViewer.open",
           "when": "resourceExtname == .properties"
         }
       ],
       "editor/context": [
         {
-          "command": "resourceBundleEditor.open",
+          "command": "resourcePropertiesViewer.open",
           "when": "resourceExtname == .properties",
           "group": "navigation"
         }
       ],
       "explorer/context": [
         {
-          "command": "resourceBundleEditor.open",
+          "command": "resourcePropertiesViewer.open",
           "when": "resourceExtname == .properties",
           "group": "navigation"
         }
@@ -78,8 +78,8 @@
     },
     "customEditors": [
       {
-        "viewType": "resourceBundleEditor.propertiesEditor",
-        "displayName": "Resource Bundle Editor",
+        "viewType": "resourcePropertiesViewer.propertiesViewer",
+        "displayName": "Resource Properties Viewer",
         "selector": [
           {
             "filenamePattern": "*.properties"
@@ -89,24 +89,24 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "Resource Bundle Editor",
+      "title": "Resource Properties Viewer",
       "properties": {
-        "resourceBundleEditor.showRelatedFiles": {
+        "resourcePropertiesViewer.showRelatedFiles": {
           "type": "boolean",
           "default": true,
-          "description": "Show related locale files in the editor"
+          "description": "Show related locale files in the viewer"
         },
-        "resourceBundleEditor.defaultLocale": {
+        "resourcePropertiesViewer.defaultLocale": {
           "type": "string",
           "default": "en",
           "description": "Default locale to display when multiple locales are present"
         },
-        "resourceBundleEditor.unicodeEscapeDefault": {
+        "resourcePropertiesViewer.unicodeEscapeDefault": {
           "type": "boolean",
           "default": true,
           "description": "Whether to show Unicode escapes by default (\\uXXXX)"
         },
-        "resourceBundleEditor.keySeparator": {
+        "resourcePropertiesViewer.keySeparator": {
           "type": "string",
           "default": ".",
           "description": "Separator used to split hierarchical keys (e.g. 'ui.dialog.ok')"

@@ -9,7 +9,7 @@ function getSampleFilePath(locale: string): string {
   return path.join(SAMPLE_DIR, `messages${locale ? '_' + locale : ''}.properties`);
 }
 
-suite('Resource Bundle Editor Integration', () => {
+suite('Resource Properties Viewer Integration', () => {
   let documentsToClose: vscode.TextDocument[] = [];
 
   teardown(async () => {
