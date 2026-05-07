@@ -29,7 +29,7 @@ describe('Resource Properties Viewer Integration', () => {
     documentsToClose.push(document);
 
     assert.ok(document, 'Document should be opened');
-    assert.strictEqual(document.languageId, 'java', 'Properties files should be treated as java');
+    assert.strictEqual(document.languageId, 'properties', 'Properties files should be treated as properties');
 
     const content = document.getText();
     assert.ok(content.includes('greeting'), 'Should contain greeting key');

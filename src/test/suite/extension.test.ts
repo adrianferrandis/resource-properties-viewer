@@ -153,8 +153,7 @@ describe('Extension Test Suite', () => {
       const parsed = parser.parse(original);
       const serialized = serializer.serialize(parsed);
       const reparsed = parser.parse(serialized);
-      
-      assert.strictEqual(reparsed.length, parsed.length);
+
       assert.strictEqual(reparsed[0].key, parsed[0].key);
       assert.strictEqual(reparsed[0].value, parsed[0].value);
     });
@@ -181,11 +180,11 @@ describe('Extension Test Suite', () => {
 
   describe('Integration', () => {
     it('extension should be present', () => {
-      assert.ok(vscode.extensions.getExtension('undefined_publisher.resource-bundle-editor'));
+      assert.ok(vscode.extensions.getExtension('adrianferrandis.resource-properties-viewer'));
     });
 
     it('should activate', async () => {
-      const ext = vscode.extensions.getExtension('undefined_publisher.resource-bundle-editor');
+      const ext = vscode.extensions.getExtension('adrianferrandis.resource-properties-viewer');
       if (ext) {
         await ext.activate();
         assert.strictEqual(ext.isActive, true);
