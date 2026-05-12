@@ -29,14 +29,19 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Configure Git
         run: |
@@ -45,10 +50,10 @@ jobs:
 
       - name: Bump version
         if: ${{ !inputs.dryRun }}
-        run: npm version ${{ inputs.versionType }} -m "Bump version to %s"
+        run: pnpm version ${{ inputs.versionType }} -m "Bump version to %s"
 
       - name: Build extension
-        run: npm run build
+        run: pnpm run build
 
       - name: Publish to Visual Studio Marketplace
         uses: HaaLeo/publish-vscode-extension@v2
