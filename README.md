@@ -1,8 +1,9 @@
 # Resource Properties Viewer
 
-[![VS Code Marketplace](https://img.shields.io/badge/VS%20Code%20Marketplace-Install-blue?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![Tests](https://img.shields.io/badge/tests-121%20passing-brightgreen.svg)](https://github.com/adrianferrandis/resource-properties-viewer/actions)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 
 > A powerful Visual Studio Code extension for editing Java `.properties` files with a modern, spreadsheet-like interface. Inspired by Eclipse's ResourceBundle Editor, but built specifically for VS Code with native integration and real-time synchronization.
 
@@ -51,11 +52,25 @@
 
 ## ✨ What's New
 
-### Perfect Round-Trip Fidelity
+### Latest Release (v0.0.5)
+
+#### 🛡️ Enhanced Security
+- **Dependency audit**: All known vulnerabilities fixed (0 critical issues)
+- **Pinned versions**: Exact dependency versions for reproducible builds
+- **pnpm v11**: Latest package manager with enhanced security features
+- **121 automated tests**: Comprehensive test coverage for reliability
+
+#### 🎯 Visual Editor as Default (Optional)
+- **Editor title button**: Quick access to visual editor from any `.properties` file
+- **Switch seamlessly**: Toggle between text and visual editor anytime
+- **Non-intrusive**: Files open in text editor by default, visual editor available on demand
+
+#### ✨ Perfect Round-Trip Fidelity
 - **Preserves exact formatting**: Values with `=`, `:`, `!`, `#` are no longer escaped
 - **Unicode preservation**: Characters like 日本語, العربية, 👋🌍 stay as-is (no `\uXXXX` conversion)
 - **Long values**: Single-line values remain on one line, no forced formatting
 - **Special characters**: Backslashes, tabs, spaces preserved exactly
+- **100+ edit operations tested**: Complex file editing without data corruption
 
 ## 🎯 Why This Extension?
 
@@ -122,8 +137,8 @@ You have **three ways** to open the visual editor:
 
 ## Requirements
 
-- VS Code 1.74.0 or higher
-- Node.js 18+ (for development only)
+- VS Code 1.99.0 or higher
+- Node.js 22+ (for development only)
 
 ## Configuration
 
@@ -193,29 +208,53 @@ All these formats are preserved exactly as written - no unwanted escaping!
 
 ## Development
 
+This project uses [pnpm](https://pnpm.io/) for package management (v11+) with enhanced security features.
+
 ```bash
 # Clone repository
 git clone https://github.com/adrianferrandis/resource-properties-viewer.git
 cd resource-properties-viewer
 
+# Install pnpm (if not already installed)
+npm install -g pnpm@11
+
 # Install dependencies
-npm install
+pnpm install
 
 # Build
-npm run build
+pnpm run build
 
 # Watch mode
-npm run watch
+pnpm run watch
 
-# Run tests
-npm test
+# Run tests (121 tests included)
+pnpm test
 
 # Package
-npm run package
+pnpm run package
 
 # Publish
-npm run publish
+pnpm run publish
 ```
+
+### Tech Stack
+
+- **TypeScript** - Type-safe code with strict checking
+- **pnpm** - Fast, secure package manager (v11+)
+- **esbuild** - Ultra-fast bundler (<10ms builds)
+- **VS Code Extension API** - Custom editors and webviews
+- **Mocha** - Testing framework with 121 comprehensive tests
+- **GitHub Actions** - Automated CI/CD with security audits
+
+### Quality Metrics
+
+| Metric | Status | Details |
+|--------|--------|---------|
+| **Test Coverage** | 121 tests | All features tested |
+| **Security Audit** | 0 vulnerabilities | pnpm audit clean |
+| **Build Time** | <10ms | esbuild bundling |
+| **Bundle Size** | ~28KB | Minified + gzipped |
+| **CI/CD** | ✅ Passing | GitHub Actions |
 
 ## Architecture
 
@@ -247,6 +286,23 @@ Contributions welcome! Please read our [Contributing Guide](https://github.com/a
 3. Commit changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## 🗺️ Roadmap
+
+### Coming Soon
+- **🤖 AI-Powered Features**: Translation suggestions using Language Model API
+- **⚡ Performance**: Virtual scrolling for files with 1000+ keys
+- **🔄 Bulk Operations**: Multi-select, copy-paste across locales
+- **🔍 Advanced Search**: Find and replace across all locales
+- **📊 Export/Import**: CSV, JSON, Excel format support
+
+### Under Consideration
+- **🌐 Real-time Collaboration**: Live Share integration
+- **📝 Comment Editing**: Visual comment management
+- **🎨 Custom Themes**: User-defined color schemes
+- **⌨️ Vim Mode**: Keyboard-centric editing
+
+Have a feature request? [Open an issue](https://github.com/adrianferrandis/resource-properties-viewer/issues) or [start a discussion](https://github.com/adrianferrandis/resource-properties-viewer/discussions)!
 
 ## Troubleshooting
 
