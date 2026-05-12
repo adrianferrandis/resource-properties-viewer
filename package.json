@@ -136,18 +136,21 @@
       "esbuild",
       "@vscode/vsce-sign",
       "keytar"
-    ]
+    ],
+    "overrides": {
+      "serialize-javascript": "7.0.5"
+    }
   },
   "devDependencies": {
-    "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.19.0",
-    "@types/vscode": "^1.74.0",
-    "@vscode/test-electron": "^2.3.0",
-    "@vscode/vsce": "^2.24.0",
-    "esbuild": "^0.19.0",
-    "glob": "^10.3.0",
-    "mocha": "^10.2.0",
-    "typescript": "^5.3.0"
+    "@types/glob": "8.1.0",
+    "@types/mocha": "10.0.10",
+    "@types/node": "18.19.86",
+    "@types/vscode": "1.99.1",
+    "@vscode/test-electron": "2.5.2",
+    "@vscode/vsce": "3.3.2",
+    "esbuild": "0.25.3",
+    "glob": "10.5.0",
+    "mocha": "11.2.2",
+    "typescript": "5.8.3"
   }
 }
