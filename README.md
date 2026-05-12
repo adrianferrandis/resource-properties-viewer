@@ -1,7 +1,6 @@
 # Resource Properties Viewer
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![VS Code Marketplace](https://img.shields.io/badge/VS%20Code%20Marketplace-v0.0.6-blue?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
 [![Tests](https://img.shields.io/badge/tests-121%20passing-brightgreen.svg)](https://github.com/adrianferrandis/resource-properties-viewer/actions)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
