@@ -1,10 +1,10 @@
 # Resource Properties Viewer
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/adrianferrandis.resource-properties-viewer)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![VS Code Marketplace](https://img.shields.io/badge/VS%20Code%20Marketplace-Install-blue?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=adrianferrandis.resource-properties-viewer)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
 
-A powerful Visual Studio Code extension for editing Java `.properties` files with a modern, spreadsheet-like interface. Inspired by Eclipse's ResourceBundle Editor, but built specifically for VS Code with native integration and real-time synchronization.
+> A powerful Visual Studio Code extension for editing Java `.properties` files with a modern, spreadsheet-like interface. Inspired by Eclipse's ResourceBundle Editor, but built specifically for VS Code with native integration and real-time synchronization.
 
 ## Features
 
@@ -45,8 +45,28 @@ A powerful Visual Studio Code extension for editing Java `.properties` files wit
 
 ### 🔤 Unicode Support
 - **Toggle escapes**: Show/hide `\uXXXX` sequences
-- **International characters**: Full Unicode support
-- **Round-trip fidelity**: No data loss on save/load
+- **International characters**: Full Unicode support (Arabic, Chinese, Japanese, Emoji, etc.)
+- **Round-trip fidelity**: Files are saved exactly as they were read - no unwanted escaping
+- **Multiple encodings**: UTF-8 support with proper handling of special characters
+
+## ✨ What's New
+
+### Perfect Round-Trip Fidelity
+- **Preserves exact formatting**: Values with `=`, `:`, `!`, `#` are no longer escaped
+- **Unicode preservation**: Characters like 日本語, العربية, 👋🌍 stay as-is (no `\uXXXX` conversion)
+- **Long values**: Single-line values remain on one line, no forced formatting
+- **Special characters**: Backslashes, tabs, spaces preserved exactly
+
+## 🎯 Why This Extension?
+
+| Feature | Plain Text Editor | This Extension |
+|---------|-------------------|----------------|
+| Multi-locale view | ❌ Manual switching | ✅ Side-by-side comparison |
+| Hierarchical keys | ❌ Flat list | ✅ Tree view with collapse/expand |
+| Unicode handling | ❌ Raw `\uXXXX` escapes | ✅ Native characters with toggle |
+| Format preservation | ⚠️ Easy to break | ✅ Perfect round-trip fidelity |
+| Search & filter | ❌ Limited | ✅ Keys only or Keys+Values |
+| Add/Delete keys | ❌ Manual edit | ✅ One-click operations |
 
 ## Quick Start
 
@@ -66,8 +86,23 @@ A powerful Visual Studio Code extension for editing Java `.properties` files wit
 ### Usage
 
 #### Opening Files
-- Right-click any `.properties` file → **"Open with Resource Properties Viewer"**
-- Or use Command Palette: `Cmd/Ctrl+Shift+P` → "Resource Properties Viewer"
+You have **three ways** to open the visual editor:
+
+**Option 1: Editor Title Button** (Recommended)
+- Open any `.properties` file (it opens as text by default)
+- Click the **📋 Open Preview** button in the top-right corner of the editor
+
+**Option 2: Right-Click Menu**
+- Right-click any `.properties` file in the explorer or editor
+- Select **"Open with Resource Properties Viewer"**
+
+**Option 3: Command Palette**
+- Press `Cmd/Ctrl+Shift+P`
+- Type "Open with Resource Properties Viewer"
+
+#### Switching Views
+- **Text → Visual**: Click the **📋 Open Preview** button or use the command
+- **Visual → Text**: Use VS Code's "Reopen Editor With" command or click the icon in the visual editor's toolbar
 
 #### Editing
 1. Double-click a cell
@@ -135,6 +170,27 @@ api.error.unauthorized=Access denied
 
 Tree view automatically groups by `ui` and `api` prefixes.
 
+### Complex Values Preserved Exactly
+```properties
+# URLs - no escaping
+jdbc.url=jdbc:mysql://localhost:3306/db?useSSL=false&serverTimezone=UTC
+
+# JSON content
+config.json={"enabled": true, "timeout": 30}
+
+# Unicode text (not converted to \uXXXX)
+japanese=こんにちは世界
+arabic=مرحبا بالعالم
+emoji=Hello 👋 World 🌍
+
+# Values with special characters
+math=a=b+c-d*e/f
+time=HH:mm:ss
+cron=0 0 12 * * ?
+```
+
+All these formats are preserved exactly as written - no unwanted escaping!
+
 ## Development
 
 ```bash
@@ -191,6 +247,17 @@ Contributions welcome! Please read our [Contributing Guide](https://github.com/a
 3. Commit changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## Troubleshooting
+
+### File encoding issues?
+The extension uses UTF-8 encoding. If you see garbled characters, ensure your `.properties` files are saved as UTF-8 (not ISO-8859-1 or other legacy encodings).
+
+### Values being escaped?
+As of v0.0.3, the extension preserves your values exactly as written. If you see `\uXXXX` escapes or escaped special characters (`\=`, `\:`), the file was likely edited by an older version or different tool. Simply open and save with this extension to restore clean formatting.
+
+### Extension not opening?
+Make sure you're right-clicking on a `.properties` file. The extension activates automatically when you use "Open with Resource Properties Viewer".
 
 ## Support
 
