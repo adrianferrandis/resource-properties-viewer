@@ -64,10 +64,11 @@ export class PropertiesParser {
       const entry: PropertyEntry = {
         key,
         value,
+        valueRaw,
         commented: false,
         separator: sep,
         lineNumber,
-      } as PropertyEntry;
+      };
 
       // If this key existed before, replace previous one (last wins rule)
       if (indexByKey.has(key)) {

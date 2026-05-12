@@ -11,16 +11,33 @@ export class PropertiesSerializer {
   serialize(entries: PropertyEntry[]): string {
     const lines: string[] = [];
     for (const entry of entries) {
+      // Handle commented entries (standalone comment lines)
+      if (entry.commented) {
+        // If there's a comment field, use it (as produced by parser)
+        // Otherwise reconstruct from key/value (for manually created entries)
+        if (entry.comment) {
+          lines.push('# ' + entry.comment);
+        } else if (entry.key) {
+          const sep = entry.separator || '=';
+          lines.push('# ' + entry.key + sep + entry.value);
+        } else {
+          lines.push('#');
+        }
+        continue;
+      }
+
       // Preserve blank lines if an entry explicitly represents one
-      if (entry.key === '' && entry.value === '' && !entry.comment && !entry.commented) {
+      if (entry.key === '' && entry.value === '' && !entry.comment) {
         lines.push('');
         continue;
       }
+
       // Optional comment line before the entry
       if (entry.comment !== undefined && entry.comment !== null) {
         lines.push('# ' + entry.comment);
       }
-      // Serialize the single entry line (may be multi-line value)
+
+      // Serialize the single entry line
       lines.push(this.serializeEntry(entry));
     }
     return lines.join('\n');
@@ -28,36 +45,25 @@ export class PropertiesSerializer {
 
   /** Serialize a single entry, preserving its formatting and escaping. */
   serializeEntry(entry: PropertyEntry): string {
-    // If this is a blank line represented by empty key/value, emit a blank line
+    // Handle blank lines
     if (entry.key === '' && entry.value === '') {
       return '';
     }
 
-    const prefix = entry.commented ? '# ' : '';
     // Escape key (to be safe for non-ASCII; leave ASCII intact for readability)
     const keyEscaped = this.escapeUnicode(this.escapeLeadingKey(entry.key));
 
-    // Value handling: support multi-line with backslash continuation
-    const valueLines = entry.value.split('\n');
-    const firstLineEscaped = this.escapeUnicode(this.escapeValue(valueLines[0], true));
+    // Use valueRaw if available to preserve original formatting, otherwise fall back to escaped value
+    const valueToUse = entry.valueRaw !== undefined ? entry.valueRaw : this.escapeValue(entry.value, true);
 
     const sep = entry.separator;
 
-    const lines: string[] = [];
-    // First line contains the key, separator, and first value segment
-    if (valueLines.length > 1) {
-      // multi-line value: end first line with a trailing continuation
-      lines.push(`${prefix}${keyEscaped}${sep}${firstLineEscaped} \\`);
-      // Remaining lines are indented continuations
-      for (let i = 1; i < valueLines.length; i++) {
-        const seg = this.escapeUnicode(this.escapeValue(valueLines[i], false));
-        lines.push('    ' + seg);
-      }
-    } else {
-      lines.push(`${prefix}${keyEscaped}${sep}${firstLineEscaped}`);
+    // Handle case where there's no value (key-only entry)
+    if (valueToUse === '') {
+      return keyEscaped;
     }
 
-    return lines.join('\n');
+    return `${keyEscaped}${sep}${valueToUse}`;
   }
 
   // Helpers -----------------------------------------------------------------

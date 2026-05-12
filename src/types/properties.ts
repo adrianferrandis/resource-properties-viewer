@@ -2,6 +2,7 @@
 export interface PropertyEntry {
   key: string;
   value: string;
+  valueRaw?: string;          // Raw value as it appears in file (preserves formatting)
   comment?: string;           // Comment before this entry
   commented: boolean;         // Whether this entry is commented out (# prefix)
   separator: '=' | ':' | ' '; // The separator used (preserved for round-trip)
