@@ -124,12 +124,19 @@
     }
   },
   "scripts": {
-    "build": "node esbuild.mjs",
-    "watch": "node esbuild.mjs --watch",
+    "build": "pnpm exec node esbuild.mjs",
+    "watch": "pnpm exec node esbuild.mjs --watch",
     "test": "node ./out/test/runTest.js",
-    "vscode:prepublish": "npm run build",
+    "vscode:prepublish": "pnpm run build",
     "package": "vsce package",
     "publish": "vsce publish"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "@vscode/vsce-sign",
+      "keytar"
+    ]
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
