@@ -281,6 +281,8 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
       const entry = parsed.find(e => e.key === key);
       if (entry) {
         entry.value = value;
+        // Update valueRaw as well so the serializer uses the new value
+        entry.valueRaw = value;
       } else {
         parsed.push({
           key,

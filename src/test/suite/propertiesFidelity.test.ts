@@ -338,4 +338,121 @@ russian=Привет мир
       assert.strictEqual(output, input, 'Value with escaped newline should be preserved');
     });
   });
+
+  describe('Edit operations with valueRaw', () => {
+    it('should update existing key value correctly', () => {
+      const originalContent = 'abc=el texto que sea\nprueba=123\nxyz=otro valor\n';
+      const entries = parser.parse(originalContent);
+      
+      const entry = entries.find(e => e.key === 'prueba');
+      assert.ok(entry, 'Should find prueba entry');
+      
+      entry.value = '456';
+      entry.valueRaw = '456';
+      
+      const output = serializer.serialize(entries);
+      
+      assert.ok(output.includes('prueba=456'), 'Output should contain prueba=456');
+      assert.ok(!output.includes('prueba=123'), 'Output should NOT contain old value prueba=123');
+      assert.ok(!output.includes('prueba=123prueba='), 'Output should NOT contain duplicated value');
+    });
+
+    it('should handle edits in large files', () => {
+      let content = '';
+      for (let i = 0; i < 100; i++) {
+        content += `key${i}=value${i}\n`;
+      }
+      
+      const entries = parser.parse(content);
+      
+      const entry = entries.find(e => e.key === 'key50');
+      assert.ok(entry, 'Should find key50');
+      entry.value = 'MODIFIED';
+      entry.valueRaw = 'MODIFIED';
+      
+      const output = serializer.serialize(entries);
+      
+      assert.ok(output.includes('key50=MODIFIED'), 'Should contain modified value');
+      assert.ok(!output.includes('key50=value50'), 'Should NOT contain old value');
+      assert.ok(output.includes('key49=value49'), 'Should preserve key49');
+      assert.ok(output.includes('key51=value51'), 'Should preserve key51');
+    });
+
+    it('should handle edits with values containing spaces', () => {
+      const content = 'greeting=Hello World\nmessage=This is a long message with spaces\n';
+      const entries = parser.parse(content);
+      
+      const entry = entries.find(e => e.key === 'message');
+      assert.ok(entry, 'Should find message entry');
+      entry.value = 'Modified message with spaces';
+      entry.valueRaw = 'Modified message with spaces';
+      
+      const output = serializer.serialize(entries);
+      
+      assert.ok(output.includes('message=Modified message with spaces'), 'Should contain modified message');
+      assert.ok(!output.includes('message=This is a long message'), 'Should NOT contain old message');
+    });
+
+    it('should handle edits with special characters', () => {
+      const content = 'config=a=b:c!#d\nurl=http://example.com?param=value\n';
+      const entries = parser.parse(content);
+      
+      const entry = entries.find(e => e.key === 'config');
+      assert.ok(entry, 'Should find config entry');
+      entry.value = 'x=y:z@new';
+      entry.valueRaw = 'x=y:z@new';
+      
+      const output = serializer.serialize(entries);
+      
+      assert.ok(output.includes('config=x=y:z@new'), 'Should contain new config value');
+    });
+
+    it('should handle multiple edits to same key', () => {
+      const content = 'test=initial\n';
+      let entries = parser.parse(content);
+      
+      const entry = entries.find(e => e.key === 'test')!;
+      assert.ok(entry, 'Should find test entry');
+      
+      entry.value = 'first';
+      entry.valueRaw = 'first';
+      let output1 = serializer.serialize(entries);
+      
+      entries = parser.parse(output1);
+      const entry2 = entries.find(e => e.key === 'test')!;
+      assert.ok(entry2, 'Should find test entry 2');
+      entry2.value = 'second';
+      entry2.valueRaw = 'second';
+      let output2 = serializer.serialize(entries);
+      
+      entries = parser.parse(output2);
+      const entry3 = entries.find(e => e.key === 'test')!;
+      assert.ok(entry3, 'Should find test entry 3');
+      entry3.value = 'third';
+      entry3.valueRaw = 'third';
+      let output3 = serializer.serialize(entries);
+      
+      assert.ok(output3.includes('test=third'), 'Should contain third value');
+      assert.ok(!output3.includes('test=initial'), 'Should NOT contain initial');
+      assert.ok(!output3.includes('test=first'), 'Should NOT contain first');
+      assert.ok(!output3.includes('test=second'), 'Should NOT contain second');
+    });
+
+    it('should not confuse similar keys', () => {
+      const content = 'prueba=123\nprueba2=456\npruebax=789\n';
+      const entries = parser.parse(content);
+      
+      const entry = entries.find(e => e.key === 'prueba');
+      assert.ok(entry, 'Should find prueba entry');
+      entry.value = 'MODIFIED';
+      entry.valueRaw = 'MODIFIED';
+      
+      const output = serializer.serialize(entries);
+      
+      assert.ok(output.includes('prueba=MODIFIED'), 'Should contain prueba=MODIFIED');
+      assert.ok(output.includes('prueba2=456'), 'Should preserve prueba2');
+      assert.ok(output.includes('pruebax=789'), 'Should preserve pruebax');
+      assert.ok(!output.includes('prueba=123prueba='), 'Should NOT contain corrupted value');
+    });
+  });
 });
