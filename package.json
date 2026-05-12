@@ -61,6 +61,14 @@
           "when": "resourceExtname == .properties"
         }
       ],
+      "editor/title": [
+        {
+          "command": "resourcePropertiesViewer.open",
+          "when": "resourceExtname == .properties",
+          "group": "navigation",
+          "icon": "$(open-preview)"
+        }
+      ],
       "editor/context": [
         {
           "command": "resourcePropertiesViewer.open",
@@ -84,7 +92,8 @@
           {
             "filenamePattern": "*.properties"
           }
-        ]
+        ],
+        "priority": "option"
       }
     ],
     "configuration": {

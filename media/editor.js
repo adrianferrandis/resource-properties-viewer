@@ -89,6 +89,20 @@
     const toolbar = document.createElement('div');
     toolbar.className = 'toolbar';
     
+    // Open as Text button
+    const openTextBtn = document.createElement('button');
+    openTextBtn.textContent = '📄 Open as Text';
+    openTextBtn.title = 'Switch to text editor';
+    openTextBtn.onclick = () => {
+      vscode.postMessage({ type: 'openTextEditor' });
+    };
+    toolbar.appendChild(openTextBtn);
+    
+    // Separator
+    const separator = document.createElement('div');
+    separator.className = 'toolbar-separator';
+    toolbar.appendChild(separator);
+    
     // View toggle
     const viewGroup = document.createElement('div');
     viewGroup.className = 'btn-group';

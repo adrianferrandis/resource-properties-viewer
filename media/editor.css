@@ -59,11 +59,58 @@ body {
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
-  background: var(--bg);
+  background: var(--header-bg);
   flex-shrink: 0;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--input-bg);
+  color: var(--input-fg);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.toolbar-button:hover {
+  background: var(--button-hover);
+  border-color: var(--button-bg);
+}
+
+.toolbar-button.primary {
+  background: var(--button-bg);
+  color: var(--button-fg);
+  border-color: var(--button-bg);
+}
+
+.toolbar-button.primary:hover {
+  background: var(--button-hover);
+  border-color: var(--button-hover);
+}
+
+.toolbar-button .icon {
+  font-size: 14px;
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+#content {
+  flex: 1;
+  overflow: auto;
 }
 
 .btn-group {

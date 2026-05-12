@@ -96,6 +96,10 @@ export class PropertiesEditorProvider implements vscode.CustomTextEditorProvider
           await this.handleToggleComment(message as any, document, webviewPanel);
           break;
         }
+        case 'openTextEditor': {
+          await vscode.commands.executeCommand('vscode.openWith', document.uri, 'default');
+          break;
+        }
       }
     });
   }
