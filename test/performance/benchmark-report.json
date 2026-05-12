@@ -1,0 +1,389 @@
+{
+  "timestamp": "2026-05-12T22:12:06.685Z",
+  "summary": [
+    {
+      "keyCount": 100,
+      "localeCount": 1,
+      "totalValues": 100,
+      "renderTime": 0.476292,
+      "domElements": 305,
+      "memoryEstimate": 27806,
+      "scrollJank": false,
+      "filterTime": 0.065541,
+      "rowCount": 100,
+      "files": [
+        {
+          "locale": "default",
+          "size": 4113
+        }
+      ]
+    },
+    {
+      "keyCount": 100,
+      "localeCount": 3,
+      "totalValues": 300,
+      "renderTime": 0.048916,
+      "domElements": 507,
+      "memoryEstimate": 81634,
+      "scrollJank": false,
+      "filterTime": 0.064584,
+      "rowCount": 100,
+      "files": [
+        {
+          "locale": "default",
+          "size": 4113
+        },
+        {
+          "locale": "en",
+          "size": 3687
+        },
+        {
+          "locale": "es",
+          "size": 3893
+        }
+      ]
+    },
+    {
+      "keyCount": 100,
+      "localeCount": 5,
+      "totalValues": 500,
+      "renderTime": 0.070791,
+      "domElements": 709,
+      "memoryEstimate": 136038,
+      "scrollJank": false,
+      "filterTime": 0.101625,
+      "rowCount": 100,
+      "files": [
+        {
+          "locale": "default",
+          "size": 4113
+        },
+        {
+          "locale": "en",
+          "size": 3687
+        },
+        {
+          "locale": "es",
+          "size": 3893
+        },
+        {
+          "locale": "fr",
+          "size": 3923
+        },
+        {
+          "locale": "de",
+          "size": 3687
+        }
+      ]
+    },
+    {
+      "keyCount": 500,
+      "localeCount": 1,
+      "totalValues": 500,
+      "renderTime": 0.1595,
+      "domElements": 1505,
+      "memoryEstimate": 140748,
+      "scrollJank": false,
+      "filterTime": 0.121,
+      "rowCount": 500,
+      "files": [
+        {
+          "locale": "default",
+          "size": 21272
+        }
+      ]
+    },
+    {
+      "keyCount": 500,
+      "localeCount": 3,
+      "totalValues": 1500,
+      "renderTime": 0.155459,
+      "domElements": 2507,
+      "memoryEstimate": 411206,
+      "scrollJank": false,
+      "filterTime": 0.413209,
+      "rowCount": 500,
+      "files": [
+        {
+          "locale": "default",
+          "size": 21272
+        },
+        {
+          "locale": "en",
+          "size": 19057
+        },
+        {
+          "locale": "es",
+          "size": 20077
+        }
+      ]
+    },
+    {
+      "keyCount": 500,
+      "localeCount": 5,
+      "totalValues": 2500,
+      "renderTime": 0.173333,
+      "domElements": 3509,
+      "memoryEstimate": 684450,
+      "scrollJank": false,
+      "filterTime": 0.362,
+      "rowCount": 500,
+      "files": [
+        {
+          "locale": "default",
+          "size": 21272
+        },
+        {
+          "locale": "en",
+          "size": 19057
+        },
+        {
+          "locale": "es",
+          "size": 20077
+        },
+        {
+          "locale": "fr",
+          "size": 20227
+        },
+        {
+          "locale": "de",
+          "size": 19057
+        }
+      ]
+    },
+    {
+      "keyCount": 1000,
+      "localeCount": 1,
+      "totalValues": 1000,
+      "renderTime": 0.292958,
+      "domElements": 3005,
+      "memoryEstimate": 280888,
+      "scrollJank": false,
+      "filterTime": 0.323458,
+      "rowCount": 1000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 43004
+        }
+      ]
+    },
+    {
+      "keyCount": 1000,
+      "localeCount": 3,
+      "totalValues": 3000,
+      "renderTime": 0.307667,
+      "domElements": 5007,
+      "memoryEstimate": 826940,
+      "scrollJank": false,
+      "filterTime": 0.407583,
+      "rowCount": 1000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 43004
+        },
+        {
+          "locale": "en",
+          "size": 38520
+        },
+        {
+          "locale": "es",
+          "size": 40556
+        }
+      ]
+    },
+    {
+      "keyCount": 1000,
+      "localeCount": 5,
+      "totalValues": 5000,
+      "renderTime": 0.431666,
+      "domElements": 7009,
+      "memoryEstimate": 1370306,
+      "scrollJank": false,
+      "filterTime": 0.927375,
+      "rowCount": 1000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 43004
+        },
+        {
+          "locale": "en",
+          "size": 38520
+        },
+        {
+          "locale": "es",
+          "size": 40556
+        },
+        {
+          "locale": "fr",
+          "size": 40856
+        },
+        {
+          "locale": "de",
+          "size": 38520
+        }
+      ]
+    },
+    {
+      "keyCount": 2000,
+      "localeCount": 1,
+      "totalValues": 2000,
+      "renderTime": 0.653875,
+      "domElements": 6005,
+      "memoryEstimate": 566500,
+      "scrollJank": false,
+      "filterTime": 0.447416,
+      "rowCount": 2000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 88423
+        }
+      ]
+    },
+    {
+      "keyCount": 2000,
+      "localeCount": 3,
+      "totalValues": 6000,
+      "renderTime": 0.6465,
+      "domElements": 10007,
+      "memoryEstimate": 1664256,
+      "scrollJank": false,
+      "filterTime": 0.82825,
+      "rowCount": 2000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 88423
+        },
+        {
+          "locale": "en",
+          "size": 79208
+        },
+        {
+          "locale": "es",
+          "size": 83278
+        }
+      ]
+    },
+    {
+      "keyCount": 2000,
+      "localeCount": 5,
+      "totalValues": 10000,
+      "renderTime": 0.684583,
+      "domElements": 14009,
+      "memoryEstimate": 2756864,
+      "scrollJank": false,
+      "filterTime": 1.59575,
+      "rowCount": 2000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 88423
+        },
+        {
+          "locale": "en",
+          "size": 79208
+        },
+        {
+          "locale": "es",
+          "size": 83278
+        },
+        {
+          "locale": "fr",
+          "size": 83878
+        },
+        {
+          "locale": "de",
+          "size": 79208
+        }
+      ]
+    },
+    {
+      "keyCount": 5000,
+      "localeCount": 1,
+      "totalValues": 5000,
+      "renderTime": 1.535458,
+      "domElements": 15005,
+      "memoryEstimate": 1423170,
+      "scrollJank": true,
+      "filterTime": 1.5645,
+      "rowCount": 5000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 226723
+        }
+      ]
+    },
+    {
+      "keyCount": 5000,
+      "localeCount": 3,
+      "totalValues": 15000,
+      "renderTime": 1.453208,
+      "domElements": 25007,
+      "memoryEstimate": 4176994,
+      "scrollJank": true,
+      "filterTime": 2.156375,
+      "rowCount": 5000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 226723
+        },
+        {
+          "locale": "en",
+          "size": 203128
+        },
+        {
+          "locale": "es",
+          "size": 213298
+        }
+      ]
+    },
+    {
+      "keyCount": 5000,
+      "localeCount": 5,
+      "totalValues": 25000,
+      "renderTime": 2.025375,
+      "domElements": 35009,
+      "memoryEstimate": 6930020,
+      "scrollJank": true,
+      "filterTime": 4.700083,
+      "rowCount": 5000,
+      "files": [
+        {
+          "locale": "default",
+          "size": 226723
+        },
+        {
+          "locale": "en",
+          "size": 203128
+        },
+        {
+          "locale": "es",
+          "size": 213298
+        },
+        {
+          "locale": "fr",
+          "size": 214798
+        },
+        {
+          "locale": "de",
+          "size": 203128
+        }
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "virtual_scrolling",
+      "priority": "high",
+      "condition": "Files with 3000+ keys",
+      "impact": "75-95% reduction in DOM nodes",
+      "recommendation": "Implement virtual scrolling for large files"
+    }
+  ]
+}

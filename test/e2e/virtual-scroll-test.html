@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Scrolling Test</title>
+    <style>
+        :root {
+            --bg: #1e1e1e;
+            --fg: #d4d4d4;
+            --header-bg: #252526;
+            --border: #3c3c3c;
+            --input-bg: #3c3c3c;
+            --input-fg: #cccccc;
+            --button-bg: #0e639c;
+            --button-fg: #ffffff;
+            --button-hover: #1177bb;
+            --missing-bg: rgba(255, 193, 7, 0.2);
+            --missing-border: #ffc107;
+            --accent: #007fd4;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        #app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 12px 16px 8px;
+            border-bottom: 1px solid var(--border);
+            background: var(--header-bg);
+        }
+
+        .header h1 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--header-bg);
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--button-bg);
+            color: var(--button-fg);
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background: var(--button-hover);
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-input {
+            flex: 1;
+            background: var(--input-bg);
+            color: var(--input-fg);
+            border: 1px solid var(--border);
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+
+        .table-container {
+            flex: 1;
+            overflow: auto;
+            padding: 0 16px 16px;
+        }
+
+        .table-container.virtual-scroll {
+            position: relative;
+            max-height: calc(100vh - 150px);
+        }
+
+        .prop-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            table-layout: fixed;
+        }
+
+        .prop-table th {
+            position: sticky;
+            top: 0;
+            background: var(--header-bg);
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .prop-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .prop-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .key-cell {
+            width: 200px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+        }
+
+        .value-cell {
+            cursor: pointer;
+        }
+
+        .value-cell.empty {
+            color: #666;
+            font-style: italic;
+        }
+
+        .value-cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .has-missing {
+            background: var(--missing-bg);
+        }
+
+        .test-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--header-bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px var(--shadow);
+            min-width: 300px;
+        }
+
+        .test-panel h3 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+        }
+
+        .test-result {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 12px;
+        }
+
+        .test-result.pass { color: #4caf50; }
+        .test-result.fail { color: #f44336; }
+        .test-result.pending { color: #ff9800; }
+
+        .stats {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .cell-input {
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--input-fg);
+            border: 1px solid var(--accent);
+            padding: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <h1>Virtual Scrolling Test</h1>
+            <div class="subtitle" id="subtitle">Loading...</div>
+        </div>
+        
+        <div class="toolbar">
+            <button onclick="generateTestData(100)">Small (100)</button>
+            <button onclick="generateTestData(500)">Medium (500)</button>
+            <button onclick="generateTestData(1000)">Large (1000)</button>
+            <button onclick="generateTestData(5000)">XLarge (5000)</button>
+            
+            <div class="filter-container">
+                <span>🔍</span>
+                <input type="search" class="filter-input" id="filterInput" 
+                       placeholder="Filter keys..." oninput="applyFilter(this.value)">
+            </div>
+        </div>
+        
+        <div id="tableContainer" class="table-container"></div>
+    </div>
+
+    <div class="test-panel">
+        <h3>Test Results</h3>
+        <div id="testResults"></div>
+        <div class="stats" id="stats"></div>
+    </div>
+
+    <script>
+        const VIRTUAL_SCROLL_THRESHOLD = 100;
+        const ROW_HEIGHT = 32;
+        const BUFFER_ROWS = 10;
+        
+        let bundleModel = null;
+        let currentFilter = '';
+        let visibleRange = { start: 0, end: 0 };
+        let editingCell = null;
+        let scrollContainer = null;
+        let testResults = [];
+
+        function generateTestData(count) {
+            const startTime = performance.now();
+            
+            const locales = ['default', 'en', 'es', 'fr', 'de'];
+            const entries = {};
+            
+            for (let i = 0; i < count; i++) {
+                const key = `key.${i.toString().padStart(5, '0')}.test`;
+                entries[key] = {};
+                locales.forEach((loc, idx) => {
+                    if (idx === 0 || Math.random() > 0.1) {
+                        entries[key][loc] = `Value ${i} for ${loc}`;
+                    } else {
+                        entries[key][loc] = null;
+                    }
+                });
+            }
+            
+            bundleModel = {
+                locales,
+                entries
+            };
+            
+            const endTime = performance.now();
+            
+            document.getElementById('subtitle').textContent = 
+                `${count} keys × ${locales.length} locales (${(endTime - startTime).toFixed(1)}ms generation)`;
+            
+            render();
+            runTests();
+        }
+
+        function getFilteredKeys() {
+            if (!currentFilter) return Object.keys(bundleModel.entries).sort();
+            
+            const searchTerm = currentFilter.toLowerCase();
+            return Object.keys(bundleModel.entries).sort()
+                .filter(key => key.toLowerCase().includes(searchTerm));
+        }
+
+        function applyFilter(value) {
+            currentFilter = value;
+            render();
+        }
+
+        function render() {
+            if (!bundleModel) return;
+            
+            const container = document.getElementById('tableContainer');
+            container.innerHTML = '';
+            
+            const keys = getFilteredKeys();
+            
+            if (keys.length === 0) {
+                container.innerHTML = '<div style="padding: 20px; text-align: center;">No keys match filter</div>';
+                return;
+            }
+            
+            const useVirtualScroll = keys.length > VIRTUAL_SCROLL_THRESHOLD;
+            
+            if (useVirtualScroll) {
+                container.classList.add('virtual-scroll');
+            } else {
+                container.classList.remove('virtual-scroll');
+            }
+            
+            scrollContainer = container;
+            
+            const table = document.createElement('table');
+            table.className = 'prop-table';
+            
+            // Header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            const keyTh = document.createElement('th');
+            keyTh.className = 'key-col';
+            keyTh.textContent = 'Key';
+            keyTh.style.width = '250px';
+            headerRow.appendChild(keyTh);
+            
+            bundleModel.locales.forEach(loc => {
+                const th = document.createElement('th');
+                th.className = 'value-col';
+                th.textContent = loc;
+                th.style.width = '150px';
+                headerRow.appendChild(th);
+            });
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Body
+            const tbody = document.createElement('tbody');
+            
+            if (useVirtualScroll) {
+                visibleRange = { start: 0, end: 0 };
+                updateVisibleRows(tbody, keys, 0);
+                
+                let scrollTimeout;
+                container.addEventListener('scroll', () => {
+                    if (scrollTimeout) clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        updateVisibleRows(tbody, keys, container.scrollTop);
+                    }, 16);
+                });
+            } else {
+                keys.forEach(key => renderRow(key, tbody));
+            }
+            
+            table.appendChild(tbody);
+            container.appendChild(table);
+            
+            updateStats(keys.length, useVirtualScroll);
+        }
+
+        function updateVisibleRows(tbody, keys, scrollTop) {
+            const containerHeight = scrollContainer.clientHeight;
+            const startIdx = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - BUFFER_ROWS);
+            const endIdx = Math.min(keys.length, Math.ceil((scrollTop + containerHeight) / ROW_HEIGHT) + BUFFER_ROWS);
+            
+            if (visibleRange.start === startIdx && visibleRange.end === endIdx) {
+                return;
+            }
+            
+            visibleRange = { start: startIdx, end: endIdx };
+            
+            tbody.innerHTML = '';
+            
+            // Top spacer
+            const spacerTop = document.createElement('tr');
+            spacerTop.style.height = (startIdx * ROW_HEIGHT) + 'px';
+            tbody.appendChild(spacerTop);
+            
+            // Visible rows
+            for (let i = startIdx; i < endIdx; i++) {
+                renderRow(keys[i], tbody);
+            }
+            
+            // Bottom spacer
+            const spacerBottom = document.createElement('tr');
+            spacerBottom.style.height = ((keys.length - endIdx) * ROW_HEIGHT) + 'px';
+            tbody.appendChild(spacerBottom);
+        }
+
+        function renderRow(key, tbody) {
+            const row = document.createElement('tr');
+            row.style.height = ROW_HEIGHT + 'px';
+            
+            const keyCell = document.createElement('td');
+            keyCell.className = 'key-cell';
+            keyCell.textContent = key;
+            row.appendChild(keyCell);
+            
+            let hasMissing = false;
+            bundleModel.locales.forEach(loc => {
+                const cell = document.createElement('td');
+                cell.className = 'value-cell';
+                cell.dataset.key = key;
+                cell.dataset.locale = loc;
+                
+                const value = bundleModel.entries[key][loc];
+                if (!value) {
+                    cell.classList.add('empty');
+                    cell.textContent = '(empty)';
+                    hasMissing = true;
+                } else {
+                    cell.textContent = value;
+                }
+                
+                cell.onclick = () => startEdit(cell);
+                row.appendChild(cell);
+            });
+            
+            if (hasMissing) row.classList.add('has-missing');
+            tbody.appendChild(row);
+        }
+
+        function startEdit(cell) {
+            if (editingCell) return;
+            editingCell = cell;
+            
+            const key = cell.dataset.key;
+            const locale = cell.dataset.locale;
+            const value = bundleModel.entries[key][locale] || '';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = value;
+            input.className = 'cell-input';
+            
+            input.onkeydown = (ev) => {
+                if (ev.key === 'Enter') saveEdit(cell, input.value);
+                if (ev.key === 'Escape') cancelEdit(cell, value);
+            };
+            
+            input.onblur = () => saveEdit(cell, input.value);
+            
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+        }
+
+        function saveEdit(cell, value) {
+            const key = cell.dataset.key;
+            const locale = cell.dataset.locale;
+            bundleModel.entries[key][locale] = value;
+            editingCell = null;
+            
+            if (!value) {
+                cell.classList.add('empty');
+                cell.textContent = '(empty)';
+            } else {
+                cell.classList.remove('empty');
+                cell.textContent = value;
+            }
+            
+            addTestResult('Edit Cell', true, `Edited ${key}.${locale}`);
+        }
+
+        function cancelEdit(cell, originalValue) {
+            editingCell = null;
+            if (!originalValue) {
+                cell.classList.add('empty');
+                cell.textContent = '(empty)';
+            } else {
+                cell.textContent = originalValue;
+            }
+        }
+
+        function updateStats(keyCount, useVirtualScroll) {
+            const visibleRows = useVirtualScroll ? 
+                Math.min(visibleRange.end - visibleRange.start, keyCount) : keyCount;
+            
+            document.getElementById('stats').innerHTML = `
+                <div>Total keys: ${keyCount.toLocaleString()}</div>
+                <div>Virtual scrolling: ${useVirtualScroll ? 'ON' : 'OFF'}</div>
+                <div>Visible rows: ${visibleRows}</div>
+                <div>DOM rows: ${document.querySelectorAll('tbody tr').length}</div>
+            `;
+        }
+
+        async function runTests() {
+            testResults = [];
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<div class="test-result pending">Running tests...</div>';
+            
+            await testScroll();
+            await testFilter();
+            await testEdit();
+            
+            displayTestResults();
+        }
+
+        async function testScroll() {
+            const container = document.getElementById('tableContainer');
+            if (!container.classList.contains('virtual-scroll')) {
+                addTestResult('Virtual Scroll', true, 'Not needed for small files');
+                return;
+            }
+            
+            const startTime = performance.now();
+            
+            // Scroll to middle
+            const midScroll = container.scrollHeight / 2;
+            container.scrollTop = midScroll;
+            
+            await new Promise(r => setTimeout(r, 100));
+            
+            // Check that middle row is visible
+            const middleRow = document.querySelector('tbody tr:nth-child(12)');
+            const isVisible = middleRow && middleRow.getBoundingClientRect().top >= 0;
+            
+            const duration = performance.now() - startTime;
+            addTestResult('Scroll Performance', isVisible, `${duration.toFixed(1)}ms to scroll to middle`);
+            
+            // Scroll to end
+            container.scrollTop = container.scrollHeight;
+            await new Promise(r => setTimeout(r, 100));
+            
+            const lastRow = document.querySelector('tbody tr:last-child');
+            const lastVisible = lastRow && lastRow.getBoundingClientRect().top < window.innerHeight;
+            addTestResult('Scroll to End', lastVisible, 'Last row accessible');
+        }
+
+        async function testFilter() {
+            const input = document.getElementById('filterInput');
+            const startKeys = getFilteredKeys().length;
+            
+            // Apply filter
+            input.value = 'key.001';
+            applyFilter('key.001');
+            
+            await new Promise(r => setTimeout(r, 50));
+            
+            const filteredKeys = getFilteredKeys().length;
+            const filterWorked = filteredKeys < startKeys;
+            
+            addTestResult('Filter', filterWorked, `${startKeys} → ${filteredKeys} keys`);
+            
+            // Clear filter
+            input.value = '';
+            applyFilter('');
+        }
+
+        async function testEdit() {
+            const cell = document.querySelector('.value-cell:not(.empty)');
+            if (!cell) {
+                addTestResult('Cell Edit', false, 'No editable cell found');
+                return;
+            }
+            
+            const originalValue = cell.textContent;
+            cell.click();
+            
+            await new Promise(r => setTimeout(r, 50));
+            
+            const input = cell.querySelector('input');
+            if (!input) {
+                addTestResult('Cell Edit', false, 'Input not created');
+                return;
+            }
+            
+            input.value = 'TEST_VALUE';
+            input.blur();
+            
+            await new Promise(r => setTimeout(r, 50));
+            
+            const newValue = cell.textContent;
+            const editWorked = newValue === 'TEST_VALUE';
+            
+            addTestResult('Cell Edit', editWorked, `Changed "${originalValue}" → "${newValue}"`);
+        }
+
+        function addTestResult(name, passed, message) {
+            testResults.push({ name, passed, message, time: new Date().toLocaleTimeString() });
+        }
+
+        function displayTestResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = testResults.map(r => `
+                <div class="test-result ${r.passed ? 'pass' : 'fail'}">
+                    ${r.passed ? '✓' : '✗'} ${r.name}: ${r.message}
+                </div>
+            `).join('');
+        }
+
+        // Initial load
+        window.onload = () => generateTestData(1000);
+    </script>
+</body>
+</html>

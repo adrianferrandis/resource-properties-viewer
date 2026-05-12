@@ -500,3 +500,23 @@ button.active {
   overflow: auto;
   white-space: pre;
 }
+
+.table-container.virtual-scroll {
+  position: relative;
+}
+
+.table-container.virtual-scroll .prop-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-container.virtual-scroll tbody tr {
+  contain: layout style paint;
+}
+
+.table-container.virtual-scroll .key-cell,
+.table-container.virtual-scroll .value-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

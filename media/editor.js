@@ -11,6 +11,13 @@
   let showRawView = false;
   let keySeparator = '.';
   
+  // Virtual scrolling state
+  const VIRTUAL_SCROLL_THRESHOLD = 100;
+  const ROW_HEIGHT = 32;
+  const BUFFER_ROWS = 10;
+  let visibleRange = { start: 0, end: 0 };
+  let scrollContainer = null;
+  
   function encodeUnicode(str) {
     return str.replace(/[^\x00-\x7F]/g, char => '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0'));
   }
@@ -190,6 +197,89 @@
     app.appendChild(toolbar);
   }
 
+  function getFilteredKeys() {
+    const searchTerm = currentFilter.toLowerCase();
+    return Object.keys(bundleModel.entries).sort()
+      .filter(key => {
+        if (!currentFilter) return true;
+        if (key.toLowerCase().includes(searchTerm)) return true;
+        if (filterMode === 'all') {
+          const entry = bundleModel.entries[key];
+          return bundleModel.locales.some(loc => {
+            const val = entry[loc];
+            return val && val.toLowerCase().includes(searchTerm);
+          });
+        }
+        return false;
+      });
+  }
+
+  function renderRow(key, tbody) {
+    const row = document.createElement('tr');
+    row.style.height = ROW_HEIGHT + 'px';
+    
+    const keyCell = document.createElement('td');
+    keyCell.className = 'key-cell';
+    keyCell.innerHTML = `<code>${escapeHtml(key)}</code>`;
+    keyCell.title = 'Right-click for options';
+    keyCell.oncontextmenu = (e) => showKeyContextMenu(e, key);
+    row.appendChild(keyCell);
+    
+    let rowHasMissing = false;
+    bundleModel.locales.forEach(loc => {
+      const cell = document.createElement('td');
+      cell.className = 'value-cell editable';
+      cell.dataset.key = key;
+      cell.dataset.locale = loc;
+      
+      const value = bundleModel.entries[key][loc];
+      const displayValue = value ?? '';
+      
+      if (displayValue === '') {
+        cell.classList.add('empty');
+        cell.innerHTML = '<span class="placeholder">(empty)</span>';
+        rowHasMissing = true;
+      } else {
+        cell.textContent = showUnicode ? encodeUnicode(displayValue) : displayValue;
+      }
+      
+      cell.onclick = () => startEdit(cell);
+      row.appendChild(cell);
+    });
+    
+    if (rowHasMissing) row.classList.add('has-missing');
+    tbody.appendChild(row);
+    return row;
+  }
+
+  function updateVisibleRows(tbody, keys, scrollTop) {
+    const containerHeight = scrollContainer.clientHeight;
+    const totalHeight = keys.length * ROW_HEIGHT;
+    
+    const startIdx = Math.max(0, Math.floor(scrollTop / ROW_HEIGHT) - BUFFER_ROWS);
+    const endIdx = Math.min(keys.length, Math.ceil((scrollTop + containerHeight) / ROW_HEIGHT) + BUFFER_ROWS);
+    
+    if (visibleRange.start === startIdx && visibleRange.end === endIdx) {
+      return;
+    }
+    
+    visibleRange = { start: startIdx, end: endIdx };
+    
+    tbody.innerHTML = '';
+    
+    const spacerTop = document.createElement('tr');
+    spacerTop.style.height = (startIdx * ROW_HEIGHT) + 'px';
+    tbody.appendChild(spacerTop);
+    
+    for (let i = startIdx; i < endIdx; i++) {
+      renderRow(keys[i], tbody);
+    }
+    
+    const spacerBottom = document.createElement('tr');
+    spacerBottom.style.height = ((keys.length - endIdx) * ROW_HEIGHT) + 'px';
+    tbody.appendChild(spacerBottom);
+  }
+
   function renderFlatTable() {
     const app = document.getElementById('app');
     
@@ -208,13 +298,59 @@
       existingRaw.remove();
     }
     
+    const keys = getFilteredKeys();
+    
+    if (keys.length === 0) {
+      const container = document.createElement('div');
+      container.className = 'table-container';
+      const table = document.createElement('table');
+      table.className = 'prop-table';
+      
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      
+      const keyTh = document.createElement('th');
+      keyTh.className = 'key-col';
+      keyTh.textContent = 'Key';
+      headerRow.appendChild(keyTh);
+      
+      bundleModel.locales.forEach(loc => {
+        const th = document.createElement('th');
+        th.className = 'value-col';
+        th.textContent = loc === 'default' ? '(default)' : loc;
+        headerRow.appendChild(th);
+      });
+      
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+      
+      const tbody = document.createElement('tbody');
+      const emptyRow = document.createElement('tr');
+      const emptyCell = document.createElement('td');
+      emptyCell.colSpan = bundleModel.locales.length + 1;
+      emptyCell.className = 'empty-message';
+      emptyCell.textContent = currentFilter ? 'No keys match your filter' : 'No keys found. Click "Add Key" to create one.';
+      emptyRow.appendChild(emptyCell);
+      tbody.appendChild(emptyRow);
+      table.appendChild(tbody);
+      container.appendChild(table);
+      app.appendChild(container);
+      return;
+    }
+    
+    const useVirtualScroll = keys.length > VIRTUAL_SCROLL_THRESHOLD;
+    
     const container = document.createElement('div');
     container.className = 'table-container';
+    if (useVirtualScroll) {
+      container.classList.add('virtual-scroll');
+      container.style.overflow = 'auto';
+      container.style.maxHeight = 'calc(100vh - 150px)';
+    }
     
     const table = document.createElement('table');
     table.className = 'prop-table';
     
-    // Header
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
     
@@ -233,69 +369,35 @@
     thead.appendChild(headerRow);
     table.appendChild(thead);
     
-    // Body
     const tbody = document.createElement('tbody');
-    const searchTerm = currentFilter.toLowerCase();
-    const keys = Object.keys(bundleModel.entries).sort()
-      .filter(key => {
-        if (!currentFilter) return true;
-        if (key.toLowerCase().includes(searchTerm)) return true;
-        if (filterMode === 'all') {
-          const entry = bundleModel.entries[key];
-          return bundleModel.locales.some(loc => {
-            const val = entry[loc];
-            return val && val.toLowerCase().includes(searchTerm);
-          });
-        }
-        return false;
-      });
     
-    if (keys.length === 0) {
-      const emptyRow = document.createElement('tr');
-      const emptyCell = document.createElement('td');
-      emptyCell.colSpan = bundleModel.locales.length + 1;
-      emptyCell.className = 'empty-message';
-      emptyCell.textContent = currentFilter ? 'No keys match your filter' : 'No keys found. Click "Add Key" to create one.';
-      emptyRow.appendChild(emptyCell);
-      tbody.appendChild(emptyRow);
-    } else {
-      keys.forEach(key => {
-        const row = document.createElement('tr');
-        
-        // Key cell
-        const keyCell = document.createElement('td');
-        keyCell.className = 'key-cell';
-        keyCell.innerHTML = `<code>${escapeHtml(key)}</code>`;
-        keyCell.title = 'Right-click for options';
-        keyCell.oncontextmenu = (e) => showKeyContextMenu(e, key);
-        row.appendChild(keyCell);
-        
-        // Value cells
-        let rowHasMissing = false;
-        bundleModel.locales.forEach(loc => {
-          const cell = document.createElement('td');
-          cell.className = 'value-cell editable';
-          cell.dataset.key = key;
-          cell.dataset.locale = loc;
-          
-          const value = bundleModel.entries[key][loc];
-          const displayValue = value ?? '';
-          
-          if (displayValue === '') {
-            cell.classList.add('empty');
-            cell.innerHTML = '<span class="placeholder">(empty)</span>';
-            rowHasMissing = true;
-          } else {
-            cell.textContent = showUnicode ? encodeUnicode(displayValue) : displayValue;
-          }
-          
-          cell.onclick = () => startEdit(cell);
-          row.appendChild(cell);
-        });
-        
-        if (rowHasMissing) row.classList.add('has-missing');
-        tbody.appendChild(row);
+    if (useVirtualScroll) {
+      scrollContainer = container;
+      visibleRange = { start: 0, end: 0 };
+      
+      updateVisibleRows(tbody, keys, 0);
+      
+      let scrollTimeout;
+      container.addEventListener('scroll', () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          updateVisibleRows(tbody, keys, container.scrollTop);
+        }, 16);
       });
+      
+      if (editingCell) {
+        const key = editingCell.dataset.key;
+        const keyIndex = keys.indexOf(key);
+        if (keyIndex >= 0) {
+          setTimeout(() => {
+            const targetRow = keyIndex * ROW_HEIGHT;
+            container.scrollTop = targetRow - container.clientHeight / 2;
+            updateVisibleRows(tbody, keys, container.scrollTop);
+          }, 0);
+        }
+      }
+    } else {
+      keys.forEach(key => renderRow(key, tbody));
     }
     
     table.appendChild(tbody);
