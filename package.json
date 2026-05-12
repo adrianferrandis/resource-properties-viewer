@@ -2,7 +2,7 @@
   "name": "resource-properties-viewer",
   "displayName": "Resource Properties Viewer",
   "description": "Visual editor for Java .properties files with multi-locale support",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "adrianferrandis",
   "author": {
     "name": "Adrian Ferrandis Homsi"
