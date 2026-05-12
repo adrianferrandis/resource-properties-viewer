@@ -58,11 +58,8 @@ export class PropertiesSerializer {
 
     const sep = entry.separator;
 
-    // Handle case where there's no value (key-only entry)
-    if (valueToUse === '') {
-      return keyEscaped;
-    }
-
+    // Always include separator, even for empty values
+    // This ensures "key=" is preserved instead of becoming "key"
     return `${keyEscaped}${sep}${valueToUse}`;
   }
 
@@ -70,11 +67,9 @@ export class PropertiesSerializer {
   private escapeLeadingKey(key: string): string {
     // If key is empty, return as-is
     if (key.length === 0) return key;
-    // Escape a few spaces that could lead the key to be misinterpreted
-    if (key.startsWith(' ')) {
-      return '\\' + key;
-    }
-    return key;
+    // Escape spaces in key to preserve them
+    // The parser decodes \  to space, so we need to re-encode spaces back to \ 
+    return key.replace(/ /g, '\\ ');
   }
 
   private escapeUnicode(input: string): string {
